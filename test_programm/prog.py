@@ -1,127 +1,75 @@
-from functools import wraps
-import random
-
-def func(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        lst = func(*args, **kwargs)
-        print(f'Элементы списка: {lst}')
-        print(f'Длина списка: {len(lst)}')
-        print(f'Наибольший элемент: {max(lst)}')
-        print(f'Наименьший элемент: {min(lst)}')
-        average = round(sum(lst) / len(lst),2)
-        print(f'Среднее арифметическое по списку: {average}')
-        return lst 
-    return wrapper
-
-@func        
-def take_date():
-    n = int(input('Введите кол-во элементов в списке: \n- '))
-    a = float(input('Введите начало диапазона: \n- '))
-    b = float(input('Введите конец диапазона: \n- '))
-    lst = [round(random.uniform(a, b),2) for _ in range(n)]
-    return lst
-
-# take_date()
-
-
-class College:
-    def __init__(self, id, name, surname, subject, aver_ball):
-        self.id = id
-        self.name = name
-        self.sur = surname
-        self.sub = subject
-        self.ab = aver_ball
+from colorama import Fore, Style
+class Vechicle:
+    """Класс по транспорту"""
+    transport = []
+    def __init__(self, brand, weight, speed):
+        self.br = brand
+        self.wh = weight
+        self.sd = speed 
+        Vechicle.transport.append(self)
     
-    def set_stud(self):
-        n = int(input("Какое кол-во студентов вы хотите ввести? \n- "))
-        studs = []
-        for i in range(n):
-            id = i + 1
-            surname = input("-фамилия: ")
-            name = input("-имя: ")
-            subject = input("-предмет: ")
-            aver_ball = float(input("-средний балл: "))
-            print("-"*25)
-            stud = College(id, name, surname, subject, aver_ball)
-            studs.append(stud)
-        return studs
+    @classmethod
+    def set_transport(cls):
+        n = int(input('Какое кол-во транспорта вы хотите внести? : '))
+        tr = []
+        for _ in range(n):
+            brand = input('-Бренд: ')
+            weight = float(input('-Вес в кг:'))
+            speed= float(input('Скорость в км/ч: '))
+            transport = Vechicle(brand, weight, speed)
+            print(Fore.BLUE + '-' * 25 + Style.RESET_ALL)
+        return cls.transport
+
+    def get_transport(self):
+        print('-' * 25)
+        for tr in Vechicle.transport:
+            print(Fore.GREEN+
+                f'-Бренд: {tr.br}',
+                f'\n-Вес: {tr.wh}',
+                f'\nСкорость: {tr.sd}' 
+                + Style.RESET_ALL)
+            print('-' * 25)
+            
+class Car(Vechicle):
+    """Дочерный класс Car, наследующий поля с класса Vechicle"""
+    cars = []
+    def __init__(self, brand, weight, speed, num_doors):
+        super().__init__(brand, weight, speed)
+        self.nd = num_doors
+        Car.cars.append(self)
     
-    def get_stud(self, studs):
-        print('Информация о студентах:\n')
-        print("-"*25)
-        for stud in studs:
-            print(
-                f'\n-номер: {stud.id}',
-                f'\n-фамилия: {stud.sur}',
-                f'\n-имя: {stud.name}',
-                f'\n-предмет: {stud.sub}',
-                f'\n-средний балл: {stud.ab}'
-            )
-            print("-"*25)
-
-stud = College(0, "", "", "", 0.0)
-lst = stud.set_stud()
-stud.get_stud(lst)
-
-
-class College:
-    all_students = []  # Статический атрибут для хранения всех студентов
-
-    def __init__(self, id, name, surname, subject, aver_ball):
-        self.id = id
-        self.name = name
-        self.sur = surname
-        self.sub = subject
-        self.ab = aver_ball
-        College.all_students.append(self)  # Добавляем студента в общий список
-
     @classmethod
-    def get_stud(cls):
-        print('Информация о студентах:\n')
-        print("-" * 25)
-        for stud in cls.all_students:  # Используем cls для обращения к статическому атрибуту
+    def set_car(cls):
+        n = int(input('Какое кол-ов машин вы хотите занести? : '))
+        print(Fore.BLUE + '-' * 25 + Style.RESET_ALL)
+        for _ in range(n):
+            brand = input('-Бренд: ')
+            weight = float(input('-Вес в кг: '))
+            speed = float(input('-Скорость в км/ч: '))
+            num_doors = int(input('-Количество дверей в машине: '))
+            cars = Car(brand, weight, speed, num_doors)
+            print(Fore.BLUE + '-' * 25 + Style.RESET_ALL)
+
+    def get_car(self):
+        print('-' * 25)
+        for car in Car.cars:
             print(
-                f'\n-номер: {stud.id}',
-                f'\n-фамилия: {stud.sur}',
-                f'\n-имя: {stud.name}',
-                f'\n-предмет: {stud.sub}',
-                f'\n-средний балл: {stud.ab}'
+            Fore.GREEN+
+            f'-Бренд: {car.br}',
+            f'\n-Вес: {car.wh}',
+            f'\nСкорость: {car.sd}',
+            f'\nКол-во дверей: {car.nd}' 
+             + Style.RESET_ALL
             )
-            print("-" * 25)
+            print('-' * 25)
 
-class Graduate(College):  # Graduate наследует от College
-    def __init__(self, id, name, surname, subject, aver_ball, thesis_title):
-        super().__init__(id, name, surname, subject, aver_ball)  # Вызов конструктора родительского класса
-        self.thesis_title = thesis_title  # Новая функция для аспирантов
-        print(f'Аспирант {name} добавлен.')
+        
+transports = Vechicle("Mercedes-Benz", 1520, 352)
+print(Fore.BLUE + f'Документация: {transports.__doc__}' + Style.RESET_ALL)
+# transports.set_transport()
+transports.get_transport()
 
-    @classmethod
-    def get_graduates(cls):
-        print('Информация об аспирантах:\n')
-        print("-" * 25)
-        for stud in cls.all_students:  # Используем cls для обращения к статическому атрибуту
-            if isinstance(stud, Graduate):  # Проверяем, является ли студент аспирантом
-                print(
-                    f'\n-номер: {stud.id}',
-                    f'\n-фамилия: {stud.sur}',
-                    f'\n-имя: {stud.name}',
-                    f'\n-предмет: {stud.sub}',
-                    f'\n-средний балл: {stud.ab}',
-                    f'\n-тема диссертации: {stud.thesis_title}'  # Проверка на тему диссертации
-                )
-                print("-" * 25)
-
-# Создаем студентов
-stud1 = College(1, "Alice", "Smith", "Mathematics", 4.5)
-stud2 = College(2, "Bob", "Jones", "Physics", 4.0)
-
-# Создаем аспирантов
-grad1 = Graduate(3, "Charlie", "Brown", "Biology", 4.8, "Genetic Engineering")
-grad2 = Graduate(4, "Diana", "Prince", "Chemistry", 4.7, "Quantum Chemistry")
-
-# Получаем информацию о всех студентах
-College.get_stud()
-
-# Получаем информацию только об аспирантах
-Graduate.get_graduates()
+car = Car("LADA Granta", 1560, 179, 4)
+print(Fore.BLUE + f'Документация: {car.__doc__}')
+car.set_car()
+car.get_car()
